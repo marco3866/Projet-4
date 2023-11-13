@@ -186,6 +186,16 @@ main {
 .modal-body {
   padding: 15px 8%;
   margin: 15px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centrer verticalement le contenu */
+  align-items: center; /* Centrer horizontalement le contenu */
+}
+
+.modal-body p {
+  margin-top: 100px; /* Marge en haut */
+  margin-bottom: 100px; /* Marge en bas */
+  text-align: center; /* Centrer le texte */
 }
 
 label {
@@ -473,6 +483,11 @@ input[data-error]::after {
 .hero-section > .btn-signup {
   display: none;
 }
+/* AJOUT CLOSE MODAL*/
+
+
+
+
 footer {
   padding-left: 2vw;
   padding-right: 2vw;
