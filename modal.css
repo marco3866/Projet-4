@@ -171,7 +171,7 @@ main {
 
 .content {
   margin: 5% auto;
-  width: 100%;
+  width: 100%;;
   max-width: 500px;
   animation-name: modalopen;
   animation-duration: var(--modal-duration);
@@ -193,8 +193,8 @@ main {
 }
 
 .modal-body p {
-  margin-top: 100px; /* Marge en haut */
-  margin-bottom: 100px; /* Marge en bas */
+  margin-top: 10px; /* Marge en haut */
+  margin-bottom: 10px; /* Marge en bas */
   text-align: center; /* Centrer le texte */
 }
 
@@ -210,6 +210,28 @@ input {
   border: 0.8px solid #ccc;
   outline: none;
 }
+
+/* special modal */
+.full-height {
+  height: 100%;
+}
+.content.full-height {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.thank-you-modal-body {
+  flex-grow: 1; /* Permet au contenu de remplir l'espace disponible */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centre verticalement le contenu */
+  align-items: center; /* Centre horizontalement */
+}
+.modal-footer {
+  text-align: center; /* Centre le bouton horizontalement */
+  margin-bottom: 20px;
+}
+/* special modal end */
 .text-control {
   margin: 0;
   padding: 8px;
