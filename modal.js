@@ -24,7 +24,8 @@ function launchModal() {
 // Gestionnaire d'événements pour la croix de fermeture
 const closeButton = document.querySelector(".close");
 closeButton.addEventListener("click", function() {
-  modalbg.style.display = "none";
+  modalbg.style.display = "none"; // Ferme la modale
+  form.reset(); // Réinitialise le formulaire
 });
 // Sélection du formulaire et de la modale de remerciement
 const form = document.querySelector("form[name='reserve']");
@@ -36,6 +37,7 @@ form.addEventListener("submit", function(event) {
   if (validateForm()) {
     modalbg.style.display = "none"; // Ferme la modale d'inscription
     thankYouModal.style.display = "block"; // Affiche la modale de remerciement
+    form.reset(); // Réinitialise le formulaire
   }
 });
 
@@ -46,7 +48,8 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   document.getElementById("thankYouCloseButton").addEventListener("click", function() {
-    thankYouModal.style.display = "none";
+    thankYouModal.style.display = "none"; // Ferme la modale de remerciement
+    form.reset();
   });
 });
  
