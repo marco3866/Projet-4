@@ -6,12 +6,13 @@ function editNav() {
     x.className = "topnav";
   }
 }
-
 // DOM Elements
 const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
 const formData = document.querySelectorAll(".formData");
-
+const closeButton = document.querySelector(".close");
+const form = document.querySelector("form[name='reserve']");
+const thankYouModal = document.getElementById("thankYouModal");
 
 // launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
@@ -20,140 +21,170 @@ modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
 function launchModal() {
   modalbg.style.display = "block";
 }
+
 // Fermeture de la modale avec la croix
 // Gestionnaire d'événements pour la croix de fermeture
-const closeButton = document.querySelector(".close");
 closeButton.addEventListener("click", function() {
   modalbg.style.display = "none"; // Ferme la modale
-  form.reset(); // Réinitialise le formulaire
+  // Ne réinitialise pas le formulaire ici pour permettre à l'utilisateur de corriger ses entrées
 });
-// Sélection du formulaire et de la modale de remerciement
-const form = document.querySelector("form[name='reserve']");
-const thankYouModal = document.getElementById("thankYouModal");
 
 // Soumission du formulaire
 form.addEventListener("submit", function(event) {
   event.preventDefault(); // Empêche la soumission automatique du formulaire
   if (validateForm()) {
+    // Valide le formulaire
     modalbg.style.display = "none"; // Ferme la modale d'inscription
     thankYouModal.style.display = "block"; // Affiche la modale de remerciement
-    form.reset(); // Réinitialise le formulaire
+    // Réinitialise le formulaire seulement si la validation est réussie
+    form.reset();
   }
+  // Sinon, les erreurs sont déjà affichées et le formulaire n'est pas réinitialisé
 });
 
 // Attacher les gestionnaires d'événements pour fermer la modale de remerciement
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("closeThankYou").addEventListener("click", function() {
-    thankYouModal.style.display = "none";
+    thankYouModal.style.display = "none"; // Ferme la modale de remerciement
   });
 
+  // Ne réinitialise pas le formulaire ici pour permettre à l'utilisateur de voir la confirmation de l'inscription
   document.getElementById("thankYouCloseButton").addEventListener("click", function() {
     thankYouModal.style.display = "none"; // Ferme la modale de remerciement
-    form.reset();
   });
 });
- 
-// SI ERREUR
-function validateForm() {
-  var isValid = true;
-  var firstName = document.getElementById('first');
-  var formDataFirst = firstName.closest('.formData');
 
-  // Validation du prénom
+function validateForm() {
+  const isFirstNameValid = validateFirstName();
+  const isLastNameValid = validateLastName();
+  const isBirthdateValid = validateBirthdate();
+  const isEmailValid = validateEmail();
+  const isQuantityValid = validateQuantity();
+  const isCheckboxValid = validateCheckbox();
+  const isLocationValid = validateLocation();
+  
+
+  return isFirstNameValid && isLastNameValid && isBirthdateValid && isEmailValid && isQuantityValid && isCheckboxValid && isLocationValid; // et les autres validations
+}
+
+// Validation pour le prenom
+function validateFirstName() {
+  const firstName = document.getElementById('first');
+  const formDataFirst = firstName.closest('.formData');
+
   if (firstName.value.length < 2) {
     formDataFirst.setAttribute('data-error', 'Veuillez entrer 2 caractères ou plus pour le champ du prénom.');
     formDataFirst.setAttribute('data-error-visible', 'true');
-    isValid = false;
+    return false;
   } else {
     formDataFirst.removeAttribute('data-error');
     formDataFirst.setAttribute('data-error-visible', 'false');
+    return true;
   }
-  // Validation pour le nom
-  var lastName = document.getElementById('last');
-  var formDataLast = lastName.closest('.formData');
-
+}
+// NOM
+function validateLastName() {
+  const lastName = document.getElementById('last');
+  const formDataLast = lastName.closest('.formData');
   if (lastName.value.length < 2) {
     formDataLast.setAttribute('data-error', 'Veuillez entrer 2 caractères ou plus pour le champ du nom.');
     formDataLast.setAttribute('data-error-visible', 'true');
-    isValid = false;
+    return false;
   } else {
     formDataLast.removeAttribute('data-error');
     formDataLast.setAttribute('data-error-visible', 'false');
+    return true;
   }
-// Validation pour l'email
-var email = document.getElementById('email');
-var formDataEmail = email.closest('.formData');
-
-// Expression régulière pour la validation de l'email
-var emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-
-if (!emailRegex.test(email.value)) {
-  formDataEmail.setAttribute('data-error', 'Veuillez entrer une adresse email valide.');
-  formDataEmail.setAttribute('data-error-visible', 'true');
-  isValid = false;
-} else {
-  formDataEmail.removeAttribute('data-error');
-  formDataEmail.setAttribute('data-error-visible', 'false');
 }
+// EMAIL
+function validateEmail() {
+  const email = document.getElementById('email');
+  const formDataEmail = email.closest('.formData');
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+  if (!emailRegex.test(email.value)) {
+    formDataEmail.setAttribute('data-error', 'Veuillez entrer une adresse email valide.');
+    formDataEmail.setAttribute('data-error-visible', 'true');
+    return false;
+  } else {
+    formDataEmail.removeAttribute('data-error');
+    formDataEmail.setAttribute('data-error-visible', 'false');
+    return true;
+  }
+}
+// Anniversaire
+function validateBirthdate() {
+  const birthdate = document.getElementById('birthdate');
+  const formDataBirthdate = birthdate.closest('.formData');
+  const dateValue = birthdate.value; // La valeur sera au format 'YYYY-MM-DD'
+  const dateObject = dateValue ? new Date(dateValue) : null;
 
-// Validation pour la date de naissance
-var birthdate = document.getElementById('birthdate');
-var formDataBirthdate = birthdate.closest('.formData');
-
-if (!birthdate.value) { // Vérifier si une date a été sélectionnée
-  formDataBirthdate.setAttribute('data-error', 'Veuillez sélectionner une date de naissance.');
-  formDataBirthdate.setAttribute('data-error-visible', 'true');
-  isValid = false;
-} else {
-  formDataBirthdate.removeAttribute('data-error');
-  formDataBirthdate.setAttribute('data-error-visible', 'false');
+  if (!dateValue) {
+    formDataBirthdate.setAttribute('data-error', 'Veuillez sélectionner une date de naissance.');
+    formDataBirthdate.setAttribute('data-error-visible', 'true');
+    return false;
+  } else if (dateObject && dateObject.getFullYear() < 1900) {
+    formDataBirthdate.setAttribute('data-error', 'Veuillez entrer une année après 1900.');
+    formDataBirthdate.setAttribute('data-error-visible', 'true');
+    return false;
+  } else {
+    formDataBirthdate.removeAttribute('data-error');
+    formDataBirthdate.setAttribute('data-error-visible', 'false');
+    return true;
+  }
 }
 // Validation pour la quantité
-var quantity = document.getElementById('quantity');
-var formDataQuantity = quantity.closest('.formData');
+function validateQuantity() {
+  const quantity = document.getElementById('quantity');
+  const formDataQuantity = quantity.closest('.formData');
 
-// Vérifier si la quantité est dans la plage autorisée (0-99)
-if (quantity.value < 0 || quantity.value > 99 || quantity.value === "") {
-  formDataQuantity.setAttribute('data-error', 'Veuillez entrer un nombre entre 0 et 99.');
-  formDataQuantity.setAttribute('data-error-visible', 'true');
-  isValid = false;
-} else {
-  formDataQuantity.removeAttribute('data-error');
-  formDataQuantity.setAttribute('data-error-visible', 'false');
-}
-  // Ajoutez ici des validations supplémentaires pour les autres champs en suivant une logique similaire
-  // Validation pour les conditions d'utilisation
-  var checkbox = document.getElementById('checkbox1');
-  var formDataCheckbox = checkbox.closest('.formData');
-
-  if (!checkbox.checked) { // Vérifier si la case est cochée
-    formDataCheckbox.setAttribute('data-error', 'Vous devez accepter les conditions d\'utilisation.');
-    formDataCheckbox.setAttribute('data-error-visible', 'true');
-    isValid = false;
+  if (quantity.value < 0 || quantity.value > 99 || quantity.value === "") {
+    formDataQuantity.setAttribute('data-error', 'Veuillez entrer un nombre entre 0 et 99.');
+    formDataQuantity.setAttribute('data-error-visible', 'true');
+    return false;
   } else {
-    formDataCheckbox.removeAttribute('data-error');
-    formDataCheckbox.setAttribute('data-error-visible', 'false');
+    formDataQuantity.removeAttribute('data-error');
+    formDataQuantity.setAttribute('data-error-visible', 'false');
+    return true;
+  }
+}
+  // Check box
+  function validateCheckbox() {
+    const checkbox = document.getElementById('checkbox1');
+    const formDataCheckbox = checkbox.closest('.formData');
+  
+    if (!checkbox.checked) {
+      formDataCheckbox.setAttribute('data-error', 'Vous devez accepter les conditions d\'utilisation.');
+      formDataCheckbox.setAttribute('data-error-visible', 'true');
+      return false;
+    } else {
+      formDataCheckbox.removeAttribute('data-error');
+      formDataCheckbox.setAttribute('data-error-visible', 'false');
+      return true;
+    }
   }
 
 // Validation pour la sélection d'une ville
-var locationRadios = document.querySelectorAll('input[name="location"]');
-var formDataLocation = document.querySelector('.location-selection'); // Ciblez le conteneur spécifique
+function validateLocation() {
+  const locationRadios = document.querySelectorAll('input[name="location"]');
+  const formDataLocation = document.querySelector('.location-selection'); // Ciblez le conteneur spécifique
 
-var isLocationSelected = false;
-for (var i = 0; i < locationRadios.length; i++) {
-  if (locationRadios[i].checked) {
-    isLocationSelected = true;
-    break;
+  let isLocationSelected = false;
+  for (let i = 0; i < locationRadios.length; i++) {
+    if (locationRadios[i].checked) {
+      isLocationSelected = true;
+      break;
+    }
+  }
+
+  if (!isLocationSelected) {
+    formDataLocation.setAttribute('data-error', 'Veuillez choisir une ville.');
+    formDataLocation.setAttribute('data-error-visible', 'true');
+    return false;
+  } else {
+    formDataLocation.removeAttribute('data-error');
+    formDataLocation.setAttribute('data-error-visible', 'false');
+    return true;
   }
 }
+  
 
-if (!isLocationSelected) {
-  formDataLocation.setAttribute('data-error', 'Veuillez choisir une ville.');
-  formDataLocation.setAttribute('data-error-visible', 'true');
-  isValid = false;
-} else {
-  formDataLocation.removeAttribute('data-error');
-  formDataLocation.setAttribute('data-error-visible', 'false');
-}
-  return isValid;
-}
